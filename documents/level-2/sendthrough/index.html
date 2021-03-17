@@ -1,0 +1,142 @@
+<!doctype html><html><head><title>通过Xray将特定的流量指向特定出口，实现全局路由“分流”-sendthrough法 :: Project X</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta name=revised content="2021-03-17T08:39:41 UTC"><meta name=description content="Project X 的文档."><meta name=author content="Project X"><title>通过Xray将特定的流量指向特定出口，实现全局路由“分流”-sendthrough法 :: Project X</title><link rel="shortcut icon" href=/images/favicon.png type=image/x-icon><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css integrity=sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z crossorigin=anonymous><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.css><script src=https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js></script><link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel=stylesheet><link rel=stylesheet type=text/css href=https://xtls.github.io/sass/layout.css><link rel=stylesheet type=text/css href=https://xtls.github.io/css/style.main.css><link rel=stylesheet type=text/css href=https://xtls.github.io/css/style.menu.css><link rel=stylesheet type=text/css href=https://xtls.github.io/sass/shortcodes/notice.css><link rel=stylesheet type=text/css href=https://xtls.github.io/sass/shortcodes/tabs.css><link rel=stylesheet type=text/css href=https://xtls.github.io/sass/shortcodes/panel.css><link rel=stylesheet type=text/css href=https://xtls.github.io/sass/shortcodes/columns.css><link rel=stylesheet type=text/css href=https://xtls.github.io/sass/shortcodes/children.css><link rel=stylesheet type=text/css href=https://xtls.github.io/sass/shortcodes/attachments.css><link rel=stylesheet type=text/css href=https://xtls.github.io/sass/shortcodes/alert.css><link rel=stylesheet type=text/css href=/css/docport.css><script src=/js/docport.js></script><script type=text/javascript>var baseurl="https://xtls.github.io"</script><link rel=stylesheet href=/css/custom.css></head><body data-url=/documents/level-2/sendthrough/><style type=text/css>#debug{display:-webkit-box;display:-ms-flexbox;display:flex;line-height:3.5rem;margin-bottom:.35rem;padding:0 2rem;position:fixed;left:0;right:0;top:0;top:0;min-height:150px;background-color:#fff;border:3px solid red;z-index:10000;word-wrap:all;overflow:auto}</style><header><div><div class=burger><a href=javascript:void(0); style=font-size:15px onclick="$('article > aside').toggleClass('responsive')">&#9776;</a></div><div><a class=baselink href=https://xtls.github.io>Project X</a></div><nav class=shortcuts><li role><a href=/about/new rel=noopener>What's New</a></li><li role><a href=https://github.com/XTLS rel=noopener>GitHub</a></li><li role><a href=https://github.com/XTLS/Xray-core/releases rel=noopener>Download</a></li><li role><a href=https://xtls.github.io/ rel=noopener>Documentation</a></li></nav></div></header><article><aside><div class=search><div class=searchbox><input data-search-input id=search-by type=text placeholder></div><script type=text/javascript src=/vendor/lunr/lunr.min.js></script><script type=text/javascript src=/vendor/auto-complete/auto-complete.js></script><link href=/vendor/auto-complete/auto-complete.css rel=stylesheet><script type=text/javascript>var baseurl="https://xtls.github.io"</script><script type=text/javascript src=/js/search.js></script></div><center><a class=github-button href=https://github.com/XTLS/Xray-core/releases data-icon=octicon-cloud-download aria-label="Download vjeantet/hugo-theme-docport on GitHub">Download</a>
+<a class=github-button href=https://github.com/XTLS/Xray-core data-icon=octicon-star data-show-count=false aria-label="Star vjeantet/hugo-theme-docport on GitHub">Star</a>
+<a class=github-button href=https://github.com/XTLS/Xray-core/fork data-icon=octicon-repo-forked data-show-count=true aria-label="Fork vjeantet/hugo-theme-docport on GitHub">Fork</a></center>
+<script async defer src=https://buttons.github.io/buttons.js></script><div id=close_menu><a href=javascript:void(0); style=font-size:15px onclick="$('article > aside').toggleClass('responsive')"><i class="fa fa-lg fa-times"></i></a></div><ul class=menu><hr><li data-nav-id=https://xtls.github.io/about/ class="dd-item haschildren
+item_level_$level"><i class="fas fa-chevron-right ddexp"></i><a href=/about/>Project X&nbsp;⚡</a><ul><li data-nav-id=https://xtls.github.io/about/new/ class="dd-item
+item_level_$level"><a href=/about/new/>大史记&nbsp;</a></li></ul></li><hr><li data-nav-id=https://xtls.github.io/guide/ class="dd-item alwaysopen
+item_level_$level"><a href=/guide/>快速入门&nbsp;</a></li><li data-nav-id=https://xtls.github.io/config/ class="dd-item haschildren
+item_level_$level"><i class="fas fa-chevron-right ddexp"></i><a href=/config/>配置文件&nbsp;📜</a><ul><li data-nav-id=https://xtls.github.io/config/base/ class="dd-item haschildren
+item_level_$level"><a href=/config/base/>基础配置模块&nbsp;</a>
+<i class="fas fa-chevron-right ddexp"></i><ul><li data-nav-id=https://xtls.github.io/config/base/log/ class="dd-item
+item_level_$level"><a href=/config/base/log/>日志配置</a></li><li data-nav-id=https://xtls.github.io/config/base/api/ class="dd-item
+item_level_$level"><a href=/config/base/api/>API接口</a></li><li data-nav-id=https://xtls.github.io/config/base/dns/ class="dd-item
+item_level_$level"><a href=/config/base/dns/>内置DNS服务器</a></li><li data-nav-id=https://xtls.github.io/config/base/routing/ class="dd-item
+item_level_$level"><a href=/config/base/routing/>路由</a></li><li data-nav-id=https://xtls.github.io/config/base/policy/ class="dd-item
+item_level_$level"><a href=/config/base/policy/>本地策略</a></li><li data-nav-id=https://xtls.github.io/config/base/inbounds/ class="dd-item
+item_level_$level"><a href=/config/base/inbounds/>Inbounds</a></li><li data-nav-id=https://xtls.github.io/config/base/outbounds/ class="dd-item
+item_level_$level"><a href=/config/base/outbounds/>Outbounds</a></li><li data-nav-id=https://xtls.github.io/config/base/transport/ class="dd-item
+item_level_$level"><a href=/config/base/transport/>传输方式</a></li><li data-nav-id=https://xtls.github.io/config/base/stats/ class="dd-item
+item_level_$level"><a href=/config/base/stats/>统计信息</a></li><li data-nav-id=https://xtls.github.io/config/base/reverse/ class="dd-item
+item_level_$level"><a href=/config/base/reverse/>反向代理</a></li></ul></li><li data-nav-id=https://xtls.github.io/config/inbound-protocols/ class="dd-item
+item_level_$level"><a href=/config/inbound-protocols/>Inbounds 可用协议列表</a></li><li data-nav-id=https://xtls.github.io/config/outbound-protocols/ class="dd-item
+item_level_$level"><a href=/config/outbound-protocols/>Outbounds 可用协议列表</a></li><li data-nav-id=https://xtls.github.io/config/transports/ class="dd-item
+item_level_$level"><a href=/config/transports/>传输方式列表</a></li><li data-nav-id=https://xtls.github.io/config/vless/ class="dd-item
+item_level_$level"><a href=/config/vless/>VLESS 协议详解</a></li><li data-nav-id=https://xtls.github.io/config/fallback/ class="dd-item
+item_level_$level"><a href=/config/fallback/>Fallbacks</a></li><li data-nav-id=https://xtls.github.io/config/xtls/ class="dd-item
+item_level_$level"><a href=/config/xtls/>XTLS 深度剖析</a></li><li data-nav-id=https://xtls.github.io/config/env/ class="dd-item
+item_level_$level"><a href=/config/env/>环境变量</a></li><li data-nav-id=https://xtls.github.io/config/multiple_config/ class="dd-item alwaysopen
+item_level_$level"><a href=/config/multiple_config/>多文件配置</a></li></ul></li><li data-nav-id=https://xtls.github.io/documents/ class="dd-item parent haschildren
+item_level_$level"><i class="fas fa-chevron-down ddexp"></i><a href=/documents/>使用心得&nbsp;📚</a><ul><li data-nav-id=https://xtls.github.io/documents/level-0/ class="dd-item alwaysopen
+item_level_$level"><a href=/documents/level-0/>小小白白话文&nbsp;📙</a></li><li data-nav-id=https://xtls.github.io/documents/level-1/ class="dd-item alwaysopen
+item_level_$level"><a href=/documents/level-1/>入门技巧&nbsp;📚</a></li><li data-nav-id=https://xtls.github.io/documents/level-2/ class="dd-item parent active alwaysopen
+item_level_$level"><a href=/documents/level-2/>进阶文档&nbsp;📘</a></li></ul></li><li data-nav-id=https://xtls.github.io/develop/ class="dd-item haschildren
+item_level_$level"><i class="fas fa-chevron-right ddexp"></i><a href=/develop/>开发指南&nbsp;🖥️</a><ul><li data-nav-id=https://xtls.github.io/develop/intro/ class="dd-item alwaysopen
+item_level_$level"><a href=/develop/intro/>开发手册</a></li><li data-nav-id=https://xtls.github.io/develop/protocols/ class="dd-item alwaysopen
+item_level_$level"><a href=/develop/protocols/>协议详解</a></li></ul></li><li data-nav-id=https://xtls.github.io/faq/ class="dd-item alwaysopen
+item_level_$level"><a href=/faq/>常见问答&nbsp;💬</a></li><li data-nav-id=https://xtls.github.io/caseslip/ class="dd-item alwaysopen
+item_level_$level"><a href=/caseslip/>大案牍术&nbsp;</a></li><hr><li data-nav-id=https://xtls.github.io/links/ class="dd-item alwaysopen
+item_level_$level"><a href=/links/>常用链接&nbsp;🤝</a></li></ul></aside><section class=page><nav id=ariane aria-label=breadcrumb><ol class=ariane><li><a class=text-link href=https://xtls.github.io></a></li><li><a class=text-link href=/documents/>使用心得</a></li><li><a class=text-link href=/documents/level-2/>进阶文档</a></li><li class=active>通过Xray将特定的流量指向特定出口，实现全局路由“分流”-sendthrough法</li></ol></nav><h1>进阶文档<span>通过Xray将特定的流量指向特定出口，实现全局路由“分流”-sendthrough法</span></h1><nav class=subpages><li><a title=$pagetitle href=/documents/level-2/transparent_proxy/transparent_proxy/>透明代理入门</a></li><li><a title=$pagetitle href=/documents/level-2/fwmark/>通过Xray将特定的流量指向特定出口，实现全局路由“分流”-fwmark法</a></li><li class=active><a title=$pagetitle href=/documents/level-2/sendthrough/>通过Xray将特定的流量指向特定出口，实现全局路由“分流”-sendthrough法</a></li><li><a title=$pagetitle href=/documents/level-2/tproxy/>透明代理（TProxy）配置教程</a></li><li><a title=$pagetitle href=/documents/level-2/iptables_gid/>透明代理通过gid规避Xray流量</a></li></nav><div class=jump-to-section><span onclick="$h=$(this),$h.next('nav').slideToggle(100,function(){$h.children('i').attr('class',function(){return $h.next('nav').is(':visible')?'fas fa-chevron-down':'fas fa-chevron-right'})})"><span class="fas fa-align-right"></span><i class="fas fa-chevron-right"></i></span><nav id=TableOfContents><ul><li><a href=#前言>前言</a></li><li><a href=#1安装代理或者vpn软件例如wireguardipsec等>1、安装代理或者VPN软件（例如Wireguard、IPsec等）</a></li><li><a href=#2编辑vpn配置文件以wireguard为例>2、编辑VPN配置文件（以WireGuard为例）</a></li><li><a href=#3启用-wireguard-网络接口>3、启用 WireGuard 网络接口</a></li><li><a href=#4xray-corev2ray-core配置文件修改>4、Xray-core/V2ray-core配置文件修改</a></li><li><a href=#5系统设置配置>5、系统设置配置</a></li><li><a href=#6完成wireguard相关设置>6、完成WireGuard相关设置</a></li><li><a href=#后记>后记</a></li><li><a href=#感谢>感谢</a></li></ul></nav></div><div class=content><h2 ref=前言>前言</h2><a class=anchor id=前言></a><p>之前在上篇<a href=https://xtls.github.io/documents/level-2/fwmark/>通过Xray将特定的流量指向特定出口，实现全局路由“分流”-fwmark法</a>中， 已经清晰地讲过使用fwmark分流的方式，那么除此之前，Xray还提供了sendthroug可以实现相同效果，更方便</p><p>① Xray可设置指定的Tag、域名等走指定接口。如果您的接口是双栈的，可以指定IPV4或者IPV6
+② 其余用户则走原IPV4或者IPV6</p><p>具体设置如下（以Debian10为例）：</p><h2 ref=1安装代理或者vpn软件例如wireguardipsec等>1、安装代理或者VPN软件（例如Wireguard、IPsec等）</h2><a class=anchor id=1安装代理或者vpn软件例如wireguardipsec等></a><p>根据不同系统和不同软件，请参考官方安装方法</p><h2 ref=2编辑vpn配置文件以wireguard为例>2、编辑VPN配置文件（以WireGuard为例）</h2><a class=anchor id=2编辑vpn配置文件以wireguard为例></a><p>//原始文件</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-fallback data-lang=fallback>[Interface]
+PrivateKey = xxxxxxxxxxxxxxxxxxxx
+Address = &#34;your wg0 v4 address&#34;
+Address = &#34;your wg0 v6 address&#34;
+DNS = 8.8.8.8
+MTU = 1280
+
+[Peer]
+PublicKey = xxxxxxxxxxxxxxxxxxxxx
+AllowedIPs = ::/0
+AllowedIPs = 0.0.0.0/0
+Endpoint = &#34;ip:port&#34;
+</code></pre></div><p>//在[Interface]下添加如下命令：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-fallback data-lang=fallback>Table = off
+PostUP = ip -4 rule add from &#34;your wg0 v4 address&#34; lookup &lt;table&gt;
+PostUP = ip -4 route add default dev wg0 table &lt;table&gt;
+PostUP = ip -4 rule add table main suppress_prefixlength 0
+PostUP = ip -6 rule add not fwmark &lt;table&gt; table &lt;table&gt;
+PostUP = ip -6 route add ::/0 dev wg0 table &lt;table&gt;
+PostUP = ip -6 rule add table main suppress_prefixlength 0
+PostDown = ip -4 rule delete from &#34;your wg0 v4 address&#34; lookup &lt;table&gt;
+PostDown = ip -4 rule delete table main suppress_prefixlength 0
+PostDown = ip -6 rule delete not fwmark &lt;table&gt; table &lt;table&gt;
+PostDown = ip -6 rule delete table main suppress_prefixlength 0
+</code></pre></div><div class="notices warning"><p><strong>TIPS</strong></p><p>（此命令表示IPV4中from &ldquo;your wg0 v4 address"地址的走WireGuard，IPV6中::/0全局v6走WireGuard）
+（可根据自己需求增删命令，实现v6分流，也可以结合上篇实现sendThrough与fwmark融合）
+（如果不支持配置文件，可以在系统中修改路由表）</p></div><p>保存</p><p>可顺手安装</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash>apt install openresolv
+</code></pre></div><h2 ref=3启用-wireguard-网络接口>3、启用 WireGuard 网络接口</h2><a class=anchor id=3启用-wireguard-网络接口></a><p>//加载内核模块</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash>modprobe wireguard
+</code></pre></div><p>//检查WG模块加载是否正常</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash>lsmod | grep wireguard
+</code></pre></div><h2 ref=4xray-corev2ray-core配置文件修改>4、Xray-core/V2ray-core配置文件修改</h2><a class=anchor id=4xray-corev2ray-core配置文件修改></a><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-json data-lang=json>{
+  <span style=color:#f92672>&#34;api&#34;</span>: {
+    <span style=color:#f92672>&#34;services&#34;</span>: [
+      <span style=color:#e6db74>&#34;HandlerService&#34;</span>,
+      <span style=color:#e6db74>&#34;LoggerService&#34;</span>,
+      <span style=color:#e6db74>&#34;StatsService&#34;</span>
+    ],
+    <span style=color:#f92672>&#34;tag&#34;</span>: <span style=color:#e6db74>&#34;api&#34;</span>
+  },
+  <span style=color:#f92672>&#34;inbounds&#34;</span>: [
+    {
+      <span style=color:#f92672>&#34;listen&#34;</span>: <span style=color:#e6db74>&#34;127.0.0.1&#34;</span>,
+      <span style=color:#f92672>&#34;port&#34;</span>: <span style=color:#960050;background-color:#1e0010>&lt;port&gt;</span>,
+      <span style=color:#f92672>&#34;protocol&#34;</span>: <span style=color:#e6db74>&#34;dokodemo-door&#34;</span>,
+      <span style=color:#f92672>&#34;settings&#34;</span>: {
+        <span style=color:#f92672>&#34;address&#34;</span>: <span style=color:#e6db74>&#34;127.0.0.1&#34;</span>
+      },
+      <span style=color:#f92672>&#34;tag&#34;</span>: <span style=color:#e6db74>&#34;api&#34;</span>
+    }
+  ],
+  <span style=color:#f92672>&#34;outbounds&#34;</span>: [
+    {
+      <span style=color:#f92672>&#34;protocol&#34;</span>: <span style=color:#e6db74>&#34;freedom&#34;</span>,
+      <span style=color:#f92672>&#34;settings&#34;</span>: {<span style=color:#f92672>&#34;domainStrategy&#34;</span>: <span style=color:#e6db74>&#34;UseIPv4&#34;</span>}<span style=color:#960050;background-color:#1e0010>//修改此处，可v</span><span style=color:#ae81ff>4</span><span style=color:#960050;background-color:#1e0010>或者v</span><span style=color:#ae81ff>6</span>
+    },
+    {
+      <span style=color:#f92672>&#34;tag&#34;</span>: <span style=color:#e6db74>&#34;wg0&#34;</span>,
+      <span style=color:#f92672>&#34;protocol&#34;</span>: <span style=color:#e6db74>&#34;freedom&#34;</span>,
+      <span style=color:#f92672>&#34;sendThrough&#34;</span>: <span style=color:#e6db74>&#34;your wg0 v4 address&#34;</span>,<span style=color:#960050;background-color:#1e0010>//修改此处，可v4或者v6</span>
+      <span style=color:#f92672>&#34;settings&#34;</span>: {<span style=color:#f92672>&#34;domainStrategy&#34;</span>: <span style=color:#e6db74>&#34;UseIPv4&#34;</span>}<span style=color:#960050;background-color:#1e0010>//修改此处，可v</span><span style=color:#ae81ff>4</span><span style=color:#960050;background-color:#1e0010>或者v</span><span style=color:#ae81ff>6</span>
+    },
+    {
+      <span style=color:#f92672>&#34;protocol&#34;</span>: <span style=color:#e6db74>&#34;blackhole&#34;</span>,
+      <span style=color:#f92672>&#34;settings&#34;</span>: {},
+      <span style=color:#f92672>&#34;tag&#34;</span>: <span style=color:#e6db74>&#34;blocked&#34;</span>
+    }
+  ],
+  <span style=color:#f92672>&#34;policy&#34;</span>: {
+    <span style=color:#f92672>&#34;system&#34;</span>: {
+      <span style=color:#f92672>&#34;statsInboundDownlink&#34;</span>: <span style=color:#66d9ef>true</span>,
+      <span style=color:#f92672>&#34;statsInboundUplink&#34;</span>: <span style=color:#66d9ef>true</span>
+    }
+  },
+  <span style=color:#f92672>&#34;routing&#34;</span>: {
+    <span style=color:#f92672>&#34;rules&#34;</span>: [
+      
+{
+        <span style=color:#f92672>&#34;inboundTag&#34;</span>: [
+          <span style=color:#e6db74>&#34;api&#34;</span>
+        ],
+        <span style=color:#f92672>&#34;outboundTag&#34;</span>: <span style=color:#e6db74>&#34;api&#34;</span>,
+        <span style=color:#f92672>&#34;type&#34;</span>: <span style=color:#e6db74>&#34;field&#34;</span>
+      },
+{
+                <span style=color:#f92672>&#34;type&#34;</span>: <span style=color:#e6db74>&#34;field&#34;</span>,
+                <span style=color:#f92672>&#34;outboundTag&#34;</span>: <span style=color:#e6db74>&#34;wg0&#34;</span>,
+                <span style=color:#f92672>&#34;inboundTag&#34;</span>: [
+                   <span style=color:#e6db74>&#34;&lt;inboundTag&gt;&#34;</span><span style=color:#960050;background-color:#1e0010>//需要之前在inbound中指定好Tag，我这里是api生成的</span>,<span style=color:#960050;background-color:#1e0010>还可以添加域名等等</span>
+                   ]
+            },
+      {
+        <span style=color:#f92672>&#34;outboundTag&#34;</span>: <span style=color:#e6db74>&#34;blocked&#34;</span>,
+        <span style=color:#f92672>&#34;protocol&#34;</span>: [
+          <span style=color:#e6db74>&#34;bittorrent&#34;</span>
+        ],
+        <span style=color:#f92672>&#34;type&#34;</span>: <span style=color:#e6db74>&#34;field&#34;</span>
+      }
+    ]
+  },
+  <span style=color:#f92672>&#34;stats&#34;</span>: {}
+}
+</code></pre></div><div class="notices warning"><p><strong>TIPS</strong></p><p>可以通过修改 &ldquo;domainStrategy&rdquo;: &ldquo;UseIPv6"来控制对应用户的访问方式
+实测优先级要高于系统本身的gai.config</p></div><h2 ref=5系统设置配置>5、系统设置配置</h2><a class=anchor id=5系统设置配置></a><div class="notices warning"><p><strong>TIPS</strong></p><p>需要打开系统的ip_forward</p></div><h2 ref=6完成wireguard相关设置>6、完成WireGuard相关设置</h2><a class=anchor id=6完成wireguard相关设置></a><p>//开启隧道</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash>wg-quick up wg0 
+</code></pre></div><p>//开机自启</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash>systemctl enable wg-quick@wg0
+systemctl start wg-quick@wg0
+</code></pre></div><p>//验证IPv4/IPv6</p><p>自行验证Google搜索myip</p><h2 ref=后记>后记</h2><a class=anchor id=后记></a><p>本文本意是可以避免的多余的流量浪费，将路由和分流的功能交给Xray处理。避免了维护路由表的繁琐工作。顺便技术提升UP。</p><h2 ref=感谢>感谢</h2><a class=anchor id=感谢></a><p>@Xray-core@V2ray-core@WireGuard@p3terx@w@Hiram@Luminous@Ln@JackChou</p></div><div class=chevrons></div></section><section class=right-menu><div class=TableOfContents><label><i class="fas fa-align-right"></i>&nbsp;&nbsp;</label><nav><ul><li><a href=/documents/level-2/sendthrough/>通过Xray将特定的流量指向特定出口，实现全局路由“分流”-sendthrough法</a></li></ul></nav><nav id=TableOfContents><ul><li><a href=#前言>前言</a></li><li><a href=#1安装代理或者vpn软件例如wireguardipsec等>1、安装代理或者VPN软件（例如Wireguard、IPsec等）</a></li><li><a href=#2编辑vpn配置文件以wireguard为例>2、编辑VPN配置文件（以WireGuard为例）</a></li><li><a href=#3启用-wireguard-网络接口>3、启用 WireGuard 网络接口</a></li><li><a href=#4xray-corev2ray-core配置文件修改>4、Xray-core/V2ray-core配置文件修改</a></li><li><a href=#5系统设置配置>5、系统设置配置</a></li><li><a href=#6完成wireguard相关设置>6、完成WireGuard相关设置</a></li><li><a href=#后记>后记</a></li><li><a href=#感谢>感谢</a></li></ul></nav></div><div class=Actions><nav><ul><li><a href=https://github.com/XTLS/XTLS.github.io/tree/main/content/documents/level-2/sendthrough.md target=blank><i class="fab fa-github"></i></a></li><li><i class="fas fa-calendar"></i>14 March 2021</li></ul></nav></div></section></article><footer><footer><div class=row><div class="col-6 col-sm-4 text-xs-center order-sm-2"><ul class="list-inline mb-0"><li class="list-inline-item mx-2 h3" data-toggle=tooltip data-placement=top title="User mailing list" aria-label="User mailing list"><a class=text-white target=_blank rel="noopener noreferrer" href=https://example.org/mail><i class="fa fa-envelope"></i></a></li><li class="list-inline-item mx-2 h3" data-toggle=tooltip data-placement=top title=Twitter aria-label=Twitter><a class=text-white target=_blank rel="noopener noreferrer" href=https://example.org/twitter><i class="fab fa-twitter"></i></a></li><li class="list-inline-item mx-2 h3" data-toggle=tooltip data-placement=top title="Stack Overflow" aria-label="Stack Overflow"><a class=text-white target=_blank rel="noopener noreferrer" href=https://example.org/stack><i class="fab fa-stack-overflow"></i></a></li></ul></div><div class="col-6 col-sm-4 text-right text-xs-center order-sm-3"><ul class="list-inline mb-0"><li class="list-inline-item mx-2 h3" data-toggle=tooltip data-placement=top title=GitHub aria-label=GitHub><a class=text-white target=_blank rel="noopener noreferrer" href=https://github.com/XTLS><i class="fab fa-github"></i></a></li><li class="list-inline-item mx-2 h3" data-toggle=tooltip data-placement=top title=Slack aria-label=Slack><a class=text-white target=_blank rel="noopener noreferrer" href=https://example.org/slack><i class="fab fa-slack"></i></a></li><li class="list-inline-item mx-2 h3" data-toggle=tooltip data-placement=top title="Developer mailing list" aria-label="Developer mailing list"><a class=text-white target=_blank rel="noopener noreferrer" href=https://example.org/mail><i class="fa fa-envelope"></i></a></li></ul></div><div class="col-12 col-sm-4 text-center py-2 order-sm-2"><small class=text-white>&copy; 2020-2021 ProjectX Community All Rights Reserved</small></div></div></div></footer></footer></body></html>
